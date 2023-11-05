@@ -1,24 +1,7 @@
 import { mailService, userService } from '../services';
 import { APP_NAME, SITE_LINK } from '../constants';
 import logger from '../helpers/logger';
-const fs = require('fs');
-const handlebars = require('handlebars');
 
-async function renderMailTemplate(templatePath: string, data: object) {
-  try {
-    // Load the email template
-    // const templatePath = './email-templates/welcome-email.html';
-    const emailTemplate = fs.readFileSync(templatePath, 'utf-8');
-
-    // Compile the template
-    const compiledTemplate = handlebars.compile(emailTemplate);
-    return compiledTemplate(data);
-  } catch (e) {
-    logger.error('Error compiling template');
-    console.log(e);
-    return false;
-  }
-}
 class Controller {
   async sendWelcomeMail(email: string, firstName: string, lastName: string, token: string) {
     // Load the email template
@@ -33,7 +16,7 @@ class Controller {
       confirmationLink: confirmationLink,
     };
     // Compile the template
-    const compiledTemplate = await renderMailTemplate(templatePath, data);
+    const compiledTemplate = await mailService.renderMailTemplate(templatePath, data);
 
     if (!compiledTemplate) return false;
     // Send the email
@@ -62,7 +45,10 @@ class Controller {
       passwordResetLink: resetLink,
     };
 
-    const renderedEmail = await renderMailTemplate('src/templates/password_reset.html', data);
+    const renderedEmail = await mailService.renderMailTemplate(
+      'src/templates/password_reset.html',
+      data,
+    );
 
     if (!renderedEmail) {
       console.log('Mail template not found');
@@ -77,42 +63,28 @@ class Controller {
     return { info };
   }
 
-  /**
-   * Send an room reminder email.
-   *
-   * @param {string} email - The recipient's email address.
-   * @param {string} roomName - The name of the room.
-   * @param {string} roomDateAndTime - The date and time of the room.
-   * @param {string} roomLocation - The location of the room.
-   * @param {string} firstName - The recipient's first name.
-   */
-  async sendRoomReminderMail(
-    email: string,
-    roomName: string,
-    roomDateAndTime: string,
-    roomLocation: string,
-    firstName: string,
-  ) {
+  async sendMagicLinkEmail(email: string, token: string) {
     // Load the email template
-    const templatePath = 'room_reminder.html';
+    const templatePath = 'src/templates/magic_link.html';
+
+    const magicLink = `${SITE_LINK}/auth/welcome/${token}`;
 
     // Replace placeholders with actual data
     const data = {
-      roomName: roomName,
-      roomDateAndTime: roomDateAndTime,
-      roomLocation: roomLocation,
-      firstName: firstName,
+      magicLink: magicLink,
     };
-
     // Compile the template
-    const compiledTemplate = await renderMailTemplate(templatePath, data);
+    const compiledTemplate = await mailService.renderMailTemplate(templatePath, data);
 
     if (!compiledTemplate) return false;
-
     // Send the email
-    const info = await mailService.sendMail(email, compiledTemplate, 'Room Reminder');
+    const info = await mailService.sendMail(
+      email,
+      compiledTemplate,
+      `${APP_NAME} #100DaysOfAPIAwesomeness Confirm Login`,
+    );
 
-    logger.info(`Room reminder email sent to: ${email}`);
+    console.log(`#100DaysOfAPIAwesomeness Magic link email sent to: ${email}`);
 
     return { info };
   }

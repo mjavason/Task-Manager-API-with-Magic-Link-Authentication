@@ -1,5 +1,7 @@
 import nodeMailer from 'nodemailer';
 import { MAIL_ADDRESS, MAIL_PASSWORD, SITE_LINK } from '../constants';
+const fs = require('fs');
+const handlebars = require('handlebars');
 import { SuccessMsgResponse } from '../helpers/response';
 
 // Email account setup and login. You need to pass in your email credentials and use this app to control it.
@@ -23,6 +25,22 @@ class Service {
       html: mailHtmlBody,
     });
   };
+
+  async renderMailTemplate(templatePath: string, data: object) {
+    try {
+      // Load the email template
+      // const templatePath = './email-templates/welcome-email.html';
+      const emailTemplate = fs.readFileSync(templatePath, 'utf-8');
+
+      // Compile the template
+      const compiledTemplate = handlebars.compile(emailTemplate);
+      return compiledTemplate(data);
+    } catch (e) {
+      logger.error('Error compiling template');
+      console.log(e);
+      return false;
+    }
+  }
 }
 
 export const mailService = new Service();
