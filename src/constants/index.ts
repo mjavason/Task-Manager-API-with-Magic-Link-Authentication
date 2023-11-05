@@ -94,7 +94,7 @@ export const SWAGGER_OPTIONS = {
         description: 'Development Environment',
       },
       {
-        url: 'https://staging.example.com/api/v1', // Staging environment
+        url: 'https://task-manager-v2.onrender.com/api/v1', // Staging environment
         description: 'Staging Environment',
       },
       {
