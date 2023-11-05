@@ -4,7 +4,7 @@ Task Manager API offers a straightforward solution for efficient task management
 
 ## Documentation
 
-Explore the API's endpoints, schemas, and authentication details through our Swagger documentation, available [here](https://task-manager-ivkj.onrender.com/docs).
+Explore the API's endpoints, schemas, and authentication details through our Swagger documentation, available [here](https://task-manager-v2.onrender.com/docs).
 
 ## Main Scripts
 
@@ -62,7 +62,7 @@ USERNAME=user@mail.com
 
 To get started with the Task Manager API, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/Task-Manager-API.git`
+1. Clone the repository: `git clone https://github.com/mjavason/Task-Manager-API.git`
 
 2. Install dependencies: `npm install`
 
