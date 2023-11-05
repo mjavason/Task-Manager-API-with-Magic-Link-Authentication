@@ -8,6 +8,8 @@ import {
 import { userController } from '../../../controllers';
 import { authValidation } from '../../../validation';
 
+router.get('/magic/:token', userController.authorizeUserFromMagicLink);
+
 router.post(
   '/reset-password-email/:email',
   processRequestParams(authValidation.resetPasswordEmail.params),
@@ -24,6 +26,6 @@ router.post('/register', processRequestBody(authValidation.register.body), userC
 
 router.post('/login', processRequestBody(authValidation.login.body), userController.login);
 
-router.delete('/logout', userController.logout)
+router.delete('/logout', userController.logout);
 
 export default router;

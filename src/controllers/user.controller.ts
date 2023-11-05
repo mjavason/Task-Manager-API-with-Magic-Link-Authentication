@@ -7,10 +7,12 @@ import {
   InternalErrorResponse,
   SuccessMsgResponse,
   SuccessResponse,
+  BadRequestResponse,
+  AccessTokenErrorResponse,
 } from '../helpers/response';
 import { resetTokenService, userService } from '../services';
 import logger from '../helpers/logger';
-import { signJwt } from '../utils/jwt';
+import { signJwt, verifyJwt } from '../utils/jwt';
 import { ACCESS_TOKEN_SECRET, JWT_SECRET, MESSAGES, REFRESH_TOKEN_SECRET } from '../constants';
 import { mailController } from '../controllers';
 
@@ -77,10 +79,16 @@ class Controller {
 
     let accessToken = await signJwt({ _id, role, email }, ACCESS_TOKEN_SECRET, '48h');
     let refreshToken = await signJwt({ _id, role, email }, REFRESH_TOKEN_SECRET, '24h');
+    let magicLinkToken = await signJwt({ _id, role, email }, JWT_SECRET, '3m');
 
-    res.cookie('token', accessToken, { httpOnly: true });
+    // res.cookie('token', accessToken, { httpOnly: true });
 
-    return SuccessMsgResponse(res, MESSAGES.LOGGED_IN);
+    mailController.sendMagicLinkEmail(user.email, magicLinkToken);
+
+    return SuccessMsgResponse(
+      res,
+      'We sent you a verification link to your email address. Click the link to sign-in on this device. Expires in 3 minutes',
+    );
 
     // let data = {
     //   access_token: accessToken,
@@ -89,6 +97,22 @@ class Controller {
 
     // Return a success response or the token, depending on your authentication method
     // return SuccessResponse(res, data, MESSAGES.LOGGED_IN);
+  }
+
+  async authorizeUserFromMagicLink(req: Request, res: Response) {
+    const { token } = req.params;
+    if (!token) return BadRequestResponse(res, 'Unauthorized! Invalid token');
+
+    const decoded = await verifyJwt(token, JWT_SECRET);
+    if (!decoded) return AccessTokenErrorResponse(res, 'Unauthorized! Invalid token');
+
+    const { _id, role, email } = decoded;
+
+    let accessToken = await signJwt({ _id, role, email }, ACCESS_TOKEN_SECRET, '48h');
+
+    res.cookie('token', accessToken, { httpOnly: true });
+
+    return SuccessMsgResponse(res, MESSAGES.LOGGED_IN);
   }
 
   async resetPasswordMail(req: Request, res: Response) {

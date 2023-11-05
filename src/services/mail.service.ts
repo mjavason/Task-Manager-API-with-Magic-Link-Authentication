@@ -3,6 +3,7 @@ import { MAIL_ADDRESS, MAIL_PASSWORD, SITE_LINK } from '../constants';
 const fs = require('fs');
 const handlebars = require('handlebars');
 import { SuccessMsgResponse } from '../helpers/response';
+import logger from '../helpers/logger';
 
 // Email account setup and login. You need to pass in your email credentials and use this app to control it.
 const transporter = nodeMailer.createTransport({

@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { JWT_SECRET } from '../constants';
 
 async function signJwt(payload: object, signature = JWT_SECRET, expiresIn?: string | number) {
@@ -9,12 +9,12 @@ async function signJwt(payload: object, signature = JWT_SECRET, expiresIn?: stri
   return await jwt.sign(payload, signature, options);
 }
 
-async function verifyJwt(token: string, signature = JWT_SECRET) {
+async function verifyJwt(token: string, signature = JWT_SECRET): Promise<any> {
   try {
     const decoded = await jwt.verify(token, signature);
     return decoded;
-  } catch (e) {
-    // console.log(e);
+  } catch (e: any) {
+    console.log(e.message);
     return false;
   }
 }

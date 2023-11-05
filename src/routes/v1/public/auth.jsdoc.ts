@@ -1,4 +1,3 @@
-
 /**
  * @swagger
  * /auth/reset-password-email/{email}:
@@ -58,6 +57,27 @@
 
 /**
  * @swagger
+ * /auth/magic/{token}:
+ *   get:
+ *     summary: Authenticate with a Magic Link
+ *     description: Log the user in using a valid authentication token provided via a Magic Link.
+ *     tags: [Authentication]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         description: The Magic Link authentication token.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Magic Link Authentication successful. User logged in.
+ *       '400':
+ *         description: Bad request.
+ */
+
+/**
+ * @swagger
  * /auth/register:
  *   post:
  *     summary: Register a new user
@@ -93,7 +113,7 @@
  *             $ref: '#/components/schemas/LoginSchema'
  *     responses:
  *       '200':
- *         description: User logged in successfully.
+ *         description: User logged in successfully. Magic link sent to email.
  *       '400':
  *         description: Bad request.
  */

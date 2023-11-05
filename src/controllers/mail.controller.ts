@@ -7,7 +7,7 @@ class Controller {
     // Load the email template
     const templatePath = 'src/templates/welcome.html';
 
-    const confirmationLink = `${SITE_LINK}/auth/welcome/${token}`;
+    const confirmationLink = `${SITE_LINK}/api/v1/auth/welcome/${token}`;
 
     // Replace placeholders with actual data
     const data = {
@@ -39,7 +39,7 @@ class Controller {
       return false;
     }
 
-    const resetLink = `${SITE_LINK}auth/reset-password/${token}`;
+    const resetLink = `${SITE_LINK}/api/v1/auth/reset-password/${token}`;
     const data = {
       email: email,
       passwordResetLink: resetLink,
@@ -67,7 +67,7 @@ class Controller {
     // Load the email template
     const templatePath = 'src/templates/magic_link.html';
 
-    const magicLink = `${SITE_LINK}/auth/welcome/${token}`;
+    const magicLink = `${SITE_LINK}api/v1/auth/magic/${token}`;
 
     // Replace placeholders with actual data
     const data = {
@@ -81,7 +81,7 @@ class Controller {
     const info = await mailService.sendMail(
       email,
       compiledTemplate,
-      `${APP_NAME} #100DaysOfAPIAwesomeness Confirm Login`,
+      `${APP_NAME} #100DaysOfAPIAwesomeness`,
     );
 
     console.log(`#100DaysOfAPIAwesomeness Magic link email sent to: ${email}`);
