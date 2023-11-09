@@ -67,7 +67,7 @@ class Controller {
     // Load the email template
     const templatePath = 'src/templates/magic_link.html';
 
-    const magicLink = `${SITE_LINK}api/v1/auth/magic/${token}`;
+    const magicLink = `${SITE_LINK}/api/v1/auth/magic/${token}`;
 
     // Replace placeholders with actual data
     const data = {
